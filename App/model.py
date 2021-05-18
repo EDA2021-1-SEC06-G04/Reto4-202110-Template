@@ -30,6 +30,9 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.ADT.graph import gr
+from DISClib.Algorithms.Graphs import scc
+from DISClib.Algorithms.Graphs import dijsktra as djk
 assert cf
 
 """
@@ -38,13 +41,49 @@ los mismos.
 """
 
 # Construccion de modelos
+def newCatalog():
+    catalog = {
+        'landing_points': None,
+        'countries': None,
+        'grafo_cables': None
+    }
+
+    catalog['landing_points'] = mp.newMap(maptype='PROBING', loadfactor=0.5)
+    catalog['countries'] = mp.newMap(loadfactor=4.0)
+    catalog['grafo_cables'] = gr.newGraph(datastructure='ADJ_LIST', directed=True, comparefunction=CompareLandingPoints)
+
+
 
 # Funciones para agregar informacion al catalogo
+def addLP(catalog, lp_agregar):
+    landing_points_mapa = catalog['landing_points']
+    mp.put(landing_points_mapa, lp_agregar['landing_point'], lp_agregar)
+
+
+def addCountry(catalog, country_agregar):
+    countries_mapa = catalog['countries']
+    mp.put(countries_mapa, country_agregar['CountryName'], country_agregar)
+
+
 
 # Funciones para creacion de datos
 
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+
+def CompareLandingPoints(landing_point, keyLP):
+    """
+    Compara dos landing points
+    """
+    LPcode = keyLP['key']
+    if (landing_point == LPcode):
+        return 0
+    elif (landing_point > LPcode):
+        return 1
+    else:
+        return -1
+
+
 
 # Funciones de ordenamiento
