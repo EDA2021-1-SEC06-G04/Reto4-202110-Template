@@ -42,39 +42,64 @@ def initCatalog():
 def loadData(catalog):
     loadLP(catalog)
     loadCountries(catalog)
+    loadConnections(catalog)
 
 
 def loadLP(catalog):
-    file = cf.data_dir +fileLP
+    file = cf.data_dir + fileLP
     input_file = csv.DictReader(open(file, encoding="utf-8"),
                                 delimiter=",")
     for lp in input_file:
         lp_agregar = {}
-        lp_agregar['landing_point'] = lp['landing_point']
+        lp_agregar['landing_point_id'] = lp['landing_point_id']
         lp_agregar['id'] = lp['id']
         lp_agregar['name'] = lp['name']
         lp_agregar['latitude'] = float(lp['latitude'])
         lp_agregar['longitude'] = float(lp['longitude'])
-        model.addLP(catalog, lp_agregar)
+        model.addLP_Mapa(catalog, lp_agregar)
 
 
 def loadCountries(catalog):
-    file = cf.data_dir +fileCountries
+    file = cf.data_dir + fileCountries
     input_file = csv.DictReader(open(file, encoding="utf-8"),
                                 delimiter=",")
     for country in input_file:
-        country_agregar = {}
-        country_agregar['CountryName'] = country['CountryName']
-        country_agregar['CapitalName'] = country['CapitalName']
-        country_agregar['CapitalLatitude'] = float(country['CapitalLatitude'])
-        country_agregar['CapitalLongitude'] = float(country['CapitalLongitude'])
-        country_agregar['CountryCode'] = float(country['CountryCode'])
-        country_agregar['ContinentName'] = float(country['ContinentName'])
-        country_agregar['Population'] = int(country['Population'])
-        country_agregar['Internet_users'] = int(country['Internet users'])
-        model.addCountry(catalog, country_agregar)
+        if not country['CountryName'] == '':
+            country_agregar = {}
+            country_agregar['CountryName'] = country['CountryName']
+            country_agregar['CapitalName'] = country['CapitalName']
+            country_agregar['CapitalLatitude'] = float(country['CapitalLatitude'])
+            country_agregar['CapitalLongitude'] = float(country['CapitalLongitude'])
+            country_agregar['CountryCode'] = country['CountryCode']
+            country_agregar['ContinentName'] = country['ContinentName']
+            country_agregar['Population'] = int(country['Population'].replace('.',''))
+            country_agregar['Internet_users'] = int(country['Internet users'].replace('.',''))
+            model.addCountry_Mapa(catalog, country_agregar)
+    
 
-#def loadGrafo(catalog):
+def loadConnections(catalog):
+    file = cf.data_dir + fileConnections
+    input_file = csv.DictReader(open(file, encoding="utf-8"),
+                                delimiter=",")
+    for filacsv in input_file:
+        conexion = {'tipo': 'cable'}
+        conexion['destiny_lp'] = filacsv['destination']
+        conexion['origin_lp'] = filacsv['origin']
+        
+        if filacsv['cable_length'] == 'n.a.':
+            conexion['distance'] = -1
+        else:
+            conexion['distance'] = float((filacsv['cable_length']).replace(',','').replace(' km',''))
+        conexion['capacidad'] = float(filacsv['capacityTBPS'])
+        conexion['cable_name'] = filacsv['cable_name']
+        conexion['cable_id'] = filacsv['cable_id']
+        conexion['cable_owners'] = filacsv['owners']
+        model.addConexion(catalog, conexion)
+    model.conectarVertices_mismoLPs(catalog)
+
+
+
+
 
 
 

@@ -24,6 +24,7 @@
  * Dario Correal - Version inicial
  """
 
+from math import sin, cos, sqrt, atan2, radians
 
 import config as cf
 from DISClib.ADT import list as lt
@@ -48,25 +49,103 @@ def newCatalog():
         'grafo_cables': None
     }
 
-    catalog['landing_points'] = mp.newMap(maptype='PROBING', loadfactor=0.5)
+    catalog['landing_points'] = mp.newMap(maptype='PROBING', loadfactor=0.5, comparefunction=CompareLandingPoints)
+    catalog['cables'] = mp.newMap(loadfactor=4.0)
     catalog['countries'] = mp.newMap(loadfactor=4.0)
-    catalog['grafo_cables'] = gr.newGraph(datastructure='ADJ_LIST', directed=True, comparefunction=CompareLandingPoints)
-
-
+    catalog['grafo'] = gr.newGraph(datastructure='ADJ_LIST', directed=True, comparefunction=CompareLandingPoints, size=3300)
+    return catalog
 
 # Funciones para agregar informacion al catalogo
-def addLP(catalog, lp_agregar):
-    landing_points_mapa = catalog['landing_points']
-    mp.put(landing_points_mapa, lp_agregar['landing_point'], lp_agregar)
+def addLP_Mapa(catalog, lp_agregar):
+    mapa_landing_points = catalog['landing_points']
+    lp_agregar['lista_vertices'] = lt.newList('ARRAY_LIST')
+    mp.put(mapa_landing_points, lp_agregar['landing_point_id'], lp_agregar)
 
 
-def addCountry(catalog, country_agregar):
+
+def addCountry_Mapa(catalog, country_agregar):
     countries_mapa = catalog['countries']
     mp.put(countries_mapa, country_agregar['CountryName'], country_agregar)
+
+def addConexion(catalog, conexion):
+    o_lp = conexion['origin_lp']
+    d_lp = conexion['destiny_lp']
+    v_origen = o_lp + '-' + conexion['cable_id']
+    v_destino = d_lp + '-' + conexion['cable_id']
+    addLP_graph(catalog, v_origen)
+    addLP_graph(catalog, v_destino)
+    addVertice_a_lista_vertices_de_LP(catalog, o_lp, conexion['cable_id'])
+    addVertice_a_lista_vertices_de_LP(catalog, d_lp, conexion['cable_id'])
+    distancia = calcularDistancia(catalog, o_lp, d_lp)
+    addConexion_graph(catalog, v_origen, v_destino, distancia)
+
+
+def calcularDistancia(catalog, lp_1, lp_2):
+    mapa_lps = catalog['landing_points']
+    lat1, lon1 = me.getValue(mp.get(mapa_lps, lp_1))['latitude'], me.getValue(mp.get(mapa_lps, lp_1))['longitude']
+    lat2, lon2 = me.getValue(mp.get(mapa_lps, lp_2))['latitude'], me.getValue(mp.get(mapa_lps, lp_2))['longitude']
+
+    R = 6373.0
+
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+
+    a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    distance = R * c
+
+    return distance
+
+
+def addLP_graph(catalog, lp_cable):
+    grafo = catalog['grafo']
+    if not gr.containsVertex(grafo, lp_cable):
+        gr.insertVertex(grafo, lp_cable)
+
+def addConexion_graph(catalog, vertice_origen, vertice_destino, distancia):
+    origen = vertice_origen
+    destino = vertice_destino
+    grafo = catalog['grafo']
+    edge = gr.getEdge(grafo, origen, destino)
+    if edge is None:
+        gr.addEdge(grafo, origen, destino, distancia)
+
+    
+def addVertice_a_lista_vertices_de_LP(catalog, lp_id, cable):
+    mapa_landing_points = catalog['landing_points']
+    lista_vertices = mp.get(mapa_landing_points, lp_id)
+
+    vertice = lp_id + '-' + cable
+
+    if lista_vertices is not None:
+        if not lt.isPresent(lista_vertices, vertice):
+            lt.addLast(lista_vertices, vertice)
+    else:
+        lista_vertices = lt.newList('ARRAY_LIST')
+        lt.addLast(lista_vertices, vertice)
+        mp.put(mapa_landing_points, lp_id, lista_vertices)
+
+
+
 
 
 
 # Funciones para creacion de datos
+
+def conectarVertices_mismoLPs(catalog):
+    mapa_LPs = catalog['landing_points']
+    lista_LPs = mp.keySet(mapa_LPs)
+    for LP in lt.iterator(lista_LPs):
+        lstVertices = me.getValue(mp.get(mapa_LPs, LP))
+        prevVertice = None
+
+        for vertice in lt.iterator(lstVertices):
+            if prevVertice is not None:
+                addConexion_graph(catalog, prevVertice, vertice, 0)
+                addConexion_graph(catalog, vertice, prevVertice, 0)
+            prevVertice = vertice
+
 
 # Funciones de consulta
 
