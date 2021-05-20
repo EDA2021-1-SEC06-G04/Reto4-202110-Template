@@ -26,6 +26,7 @@ import controller
 from DISClib.ADT import list as lt
 #import folium
 #from branca.element import Figure
+#import webbrowser
 assert cf
 
 
@@ -71,3 +72,35 @@ while True:
     else:
         sys.exit(0)
 sys.exit(0)
+
+
+#def plotstack(cont, path, initialStation, destStation):
+    #fig = Figure(height=350, width=550)
+    #my_map = folium.Map(location=[1.29,103.85])
+    #fig.add_child(my_map)
+
+    #name = initialStation.split('-')[0]
+    #base_cords, base_road, base_descr = controller.getCoords(cont, name)
+
+    #folium.Marker(location = base_cords, popup?'Estación inicial').add_to(my_map)
+
+    #feat = folium.FeatureGroup('Route from {} to {}'.format(initialStation, destStation))
+
+    #all_coords = [base_coords]
+    #while (not stack.isEmpty(path)):
+    #    stop = stack.pop(path)
+    #    w = stop['weight']
+    #    if w>0:
+    #        vB = stop['vertexB']
+    #        new_coords, new_road, new_descr = controller.getCoords(cont, vB, split('-')[0])
+    #        folium.Marker(location=new_coords, popup = new_road+'\n'+new_descr).add_to(my_map)
+
+    #        all_coords.append(new_coords)
+    
+    #line = folium.vector_layers.PolyLine(all_coords, popup='Route from {} to{}'.format(initialStation, destStation))add_to(feat)
+
+    #feat.add_to(my_map)
+    #folium.LayerControl().add_to(my_map)
+    #my_map.save('Mi_mapa.html')
+    #webbrowser.open('Mi_mapa.html')
+
