@@ -46,7 +46,7 @@ def newCatalog():
     catalog = {
         'landing_points': None,
         'countries': None,
-        'grafo_cables': None
+        'grafo': None
     }
 
     catalog['landing_points'] = mp.newMap(maptype='PROBING', loadfactor=0.5, comparefunction=CompareLandingPoints)
@@ -78,6 +78,36 @@ def addConexion(catalog, conexion):
     addVertice_a_lista_vertices_de_LP(catalog, d_lp, conexion['cable_id'])
     distancia = calcularDistancia(catalog, o_lp, d_lp)
     addConexion_graph(catalog, v_origen, v_destino, distancia)
+    addCable_Mapa(catalog, conexion)
+
+def addCable_Mapa(catalog, conexion):
+    mapa_cables = catalog['cables']
+    nombre_cable = conexion['cable_name']
+    id_cable = conexion['cable_id']
+    propietarios = conexion['cable_owners']
+    largo_cable= conexion['distance_cable']
+    lp1 = conexion['destiny_lp']
+    lp2 = conexion['origin_lp']
+
+    entry = mp.get(mapa_cables, nombre_cable)
+    if entry is not None:
+        cable = me.getValue(entry)
+        lista_lps = cable['lista_lps']
+        if not lt.isPresent(lista_lps, lp1):
+            lt.addLast(lista_lps, lp1)
+        if not lt.isPresent(lista_lps, lp2):
+            lt.addLast(lista_lps, lp2)
+    else:
+        cable = {}
+        cable['nombre_cable'] = nombre_cable
+        cable['id_cable'] = id_cable
+        cable['propietarios'] = propietarios
+        cable['largo_cable'] = largo_cable
+        cable['lista_lps'] = lt.newList('ARRAY_LIST')
+        lt.addLast(cable['lista_lps'], lp1)
+        lt.addLast(cable['lista_lps'], lp2)
+
+
 
 
 def calcularDistancia(catalog, lp_1, lp_2):
@@ -114,11 +144,12 @@ def addConexion_graph(catalog, vertice_origen, vertice_destino, distancia):
     
 def addVertice_a_lista_vertices_de_LP(catalog, lp_id, cable):
     mapa_landing_points = catalog['landing_points']
-    lista_vertices = mp.get(mapa_landing_points, lp_id)
+    entry_lista_vertices = mp.get(mapa_landing_points, lp_id)
 
     vertice = lp_id + '-' + cable
 
-    if lista_vertices is not None:
+    if entry_lista_vertices is not None:
+        lista_vertices = me.getValue(entry_lista_vertices)['lista_vertices']
         if not lt.isPresent(lista_vertices, vertice):
             lt.addLast(lista_vertices, vertice)
     else:
@@ -137,7 +168,7 @@ def conectarVertices_mismoLPs(catalog):
     mapa_LPs = catalog['landing_points']
     lista_LPs = mp.keySet(mapa_LPs)
     for LP in lt.iterator(lista_LPs):
-        lstVertices = me.getValue(mp.get(mapa_LPs, LP))
+        lstVertices = me.getValue(mp.get(mapa_LPs, LP))['lista_vertices']
         prevVertice = None
 
         for vertice in lt.iterator(lstVertices):

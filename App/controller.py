@@ -79,7 +79,7 @@ def loadCountries(catalog):
 
 def loadConnections(catalog):
     file = cf.data_dir + fileConnections
-    input_file = csv.DictReader(open(file, encoding="utf-8"),
+    input_file = csv.DictReader(open(file, encoding="utf-8-sig"),
                                 delimiter=",")
     for filacsv in input_file:
         conexion = {'tipo': 'cable'}
@@ -87,9 +87,9 @@ def loadConnections(catalog):
         conexion['origin_lp'] = filacsv['origin']
         
         if filacsv['cable_length'] == 'n.a.':
-            conexion['distance'] = -1
+            conexion['distance_cable'] = -1
         else:
-            conexion['distance'] = float((filacsv['cable_length']).replace(',','').replace(' km',''))
+            conexion['distance_cable'] = float((filacsv['cable_length']).replace(',','').replace(' km',''))
         conexion['capacidad'] = float(filacsv['capacityTBPS'])
         conexion['cable_name'] = filacsv['cable_name']
         conexion['cable_id'] = filacsv['cable_id']
