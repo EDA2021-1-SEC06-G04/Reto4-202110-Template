@@ -76,8 +76,8 @@ while True:
         print('El total de paises cargados es {}.'.format(total_paises))
         
         print('''El primer landing point cargado es {}, con codigo {}
-        y sus coordenadas latitud y longitud son: {}, {} '''.format(primer_lp['name'], primer_lp['landing_point_id']
-        , primer_lp['latitude']), primer_lp['longitude'])
+        y sus coordenadas latitud y longitud son: ({}), ({}). '''.format(primer_lp['name'], primer_lp['landing_point_id']
+        , primer_lp['latitude'], primer_lp['longitude']))
         
 
 
