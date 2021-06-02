@@ -52,7 +52,7 @@ def newCatalog():
     catalog['landing_points'] = mp.newMap(maptype='PROBING', loadfactor=0.5, comparefunction=CompareLandingPoints)
     #llaves son nombres de lp, valores son los landing_point_id oara acceder al mapa de arriba
     catalog['landing_points2'] = mp.newMap(maptype='PROBING', loadfactor=0.5, comparefunction=CompareLandingPoints)
-    #llaves son 
+    #llaves son ['cable_name'] valores son toda la info del cable del archivo de conexiones
     catalog['cables'] = mp.newMap(loadfactor=4.0)
     #llaves son nombres de paises, valores son toda la info del pais
     catalog['countries'] = mp.newMap(loadfactor=4.0)
@@ -196,7 +196,7 @@ def addVertice_a_lista_vertices_de_LP(catalog, lp_id, cable):
     else:
         lista_vertices = lt.newList('ARRAY_LIST')
         lt.addLast(lista_vertices, vertice)
-        mp.put(mapa_landing_points, lp_id, lista_vertices)
+        mp.put(mapa_landing_points, lp_id, {'lista_vertices':lista_vertices})
 
 
 
