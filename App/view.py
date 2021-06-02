@@ -47,6 +47,7 @@ def printMenu():
     print("6- Consultar el los países afectados por la falla de un landing point determinado")
     print("7- (BONO) Consultar los países conectados al cable del país con ancho de banda máximo garantizable")
     print("8- (BONO) Consultar ruta mínima en número de saltos para enviar información entre dos direcciones IP")
+    print('0- Salir/Exit')
 
 
 catalog = None

@@ -59,7 +59,10 @@ def newCatalog():
 def addLP_Mapa(catalog, lp_agregar):
     mapa_landing_points = catalog['landing_points']
     lp_agregar['lista_vertices'] = lt.newList('ARRAY_LIST')
-    lp_agregar['country'] = lp_agregar['name'].split(', ')[1]
+    if ', ' in lp_agregar['name']:
+        lp_agregar['country'] = lp_agregar['name'].split(', ')[-1]
+    else:
+        lp_agregar['country'] = lp_agregar['name']
     mp.put(mapa_landing_points, lp_agregar['landing_point_id'], lp_agregar)
     
 
@@ -194,8 +197,8 @@ def addVertice_a_lista_vertices_de_LP(catalog, lp_id, cable):
 def conectarVertices_mismoLPs(catalog):
     mapa_LPs = catalog['landing_points']
     lista_LPs = mp.keySet(mapa_LPs)
-    for LP in lt.iterator(lista_LPs):
-        lstVertices = me.getValue(mp.get(mapa_LPs, LP))['lista_vertices']
+    for lp in lt.iterator(lista_LPs):
+        lstVertices = me.getValue(mp.get(mapa_LPs, lp))['lista_vertices']
         prevVertice = None
 
         for vertice in lt.iterator(lstVertices):
