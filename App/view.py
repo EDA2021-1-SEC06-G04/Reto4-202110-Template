@@ -41,6 +41,7 @@ operación solicitada
 """
 
 def printMenu():
+    print('-------------------------------------------------------------------------------------------------------------')
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
     print("2- Consultar la cantidad de clústers en la red y si dos landing points pertenecen al mismo clúster")
@@ -51,6 +52,7 @@ def printMenu():
     print("7- (BONO) Consultar los países conectados al cable del país con ancho de banda máximo garantizable")
     print("8- (BONO) Consultar ruta mínima en número de saltos para enviar información entre dos direcciones IP")
     print('0- Salir/Exit')
+    print('-------------------------------------------------------------------------------------------------------------')
 
 
 catalog = None
@@ -62,7 +64,9 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
+
         print("Cargando información de los archivos ....")
+        print('-------------------------------------------------------------------------------------------------------------')
         #Inicializamos el catálogo
         catalog = controller.initCatalog()
         #Cargamos el catálogo
@@ -78,12 +82,14 @@ while True:
         print('''El primer landing point cargado es {}, con codigo {}
         y sus coordenadas latitud y longitud son: ({}), ({}). '''.format(primer_lp['name'], primer_lp['landing_point_id']
         , primer_lp['latitude'], primer_lp['longitude']))
+
+        print(mp.size(catalog['cables']))
         
 
 
 
     elif int(inputs[0]) == 2:
-        pass
+        print('Ingresa el primer landing point')
 
     else:
         sys.exit(0)
