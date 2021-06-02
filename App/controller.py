@@ -131,3 +131,15 @@ def loadConnections(catalog):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
+def req1(catalog, landing_point1, landing_point2):
+    #ESTOS SON LP, NO LP-CABLES ENTONCES NO SON VERTICES TODAVIA
+    info_Kosaraju = catalog['Kosaraju']
+    if  info_Kosaraju == None:
+        model.ejecutar_Kosaraju(catalog)
+    
+    numero_clusters = model.Calcular_clusters(catalog)
+    bool_fuerte_conex = model.lp_Fuertemente_conectados(catalog, landing_point1, landing_point2)
+
+    return numero_clusters, bool_fuerte_conex
+    

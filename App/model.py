@@ -48,11 +48,19 @@ def newCatalog():
         'countries': None,
         'grafo': None
     }
-
+    #llaves son landing_point__id, valores son toda la info del lp
     catalog['landing_points'] = mp.newMap(maptype='PROBING', loadfactor=0.5, comparefunction=CompareLandingPoints)
+    #llaves son nombres de lp, valores son los landing_point_id oara acceder al mapa de arriba
+    catalog['landing_points2'] = mp.newMap(maptype='PROBING', loadfactor=0.5, comparefunction=CompareLandingPoints)
+    #llaves son 
     catalog['cables'] = mp.newMap(loadfactor=4.0)
+    #llaves son nombres de paises, valores son toda la info del pais
     catalog['countries'] = mp.newMap(loadfactor=4.0)
+    #grafo : vertices: lp-cables y capitales, arcos:conexiones por cable y conexiones terrestres con capitales (y 
+# conexiones triviales entre vertices del mismo lp)
     catalog['grafo'] = gr.newGraph(datastructure='ADJ_LIST', directed=True, comparefunction=CompareLandingPoints, size=3300)
+    #aqui se guardara la info general que retorna el algoritmmo de Kosaraju sobre el grafo
+    catalog['Kosaraju'] = None
     return catalog
 
 # Funciones para agregar informacion al catalogo
@@ -114,6 +122,7 @@ def addCable_Mapa(catalog, conexion):
         cable['lista_lps'] = lt.newList('ARRAY_LIST')
         lt.addLast(cable['lista_lps'], lp1)
         lt.addLast(cable['lista_lps'], lp2)
+        mp.put(mapa_cables, nombre_cable, cable)
 
 
 
@@ -210,7 +219,42 @@ def conectarVertices_mismoLPs(catalog):
             prevVertice = vertice
 
 
+def ejecutar_Kosaraju(catalog):
+    grafo = catalog['grafo']
+    resultado_kosaraju = scc.KosarajuSCC(grafo)
+    catalog['Kosaraju'] = resultado_kosaraju
+    return resultado_kosaraju
+
 # Funciones de consulta
+
+def Calcular_clusters(catalog):
+    info_kosaraju = catalog['Kosaraju']
+    cantidad = scc.connectedComponents(info_kosaraju)
+    return cantidad
+
+
+def lp_Fuertemente_conectados(catalog, landing_point1, landing_point2):
+    mapa_lps = catalog['landing_points']
+    #creo que no toca coger la lista y chequear todos, solo basta con uno de cada uno
+    listas_vertices_1 = me.getValue(mp.get(mapa_lps, landing_point1))['lista_vertices']
+    listas_vertices_2 = me.getValue(mp.get(mapa_lps, landing_point2))['lista_vertices']
+    respuesta = False
+    for vertice1 in lt.iterator(listas_vertices_1):
+        for vertice2 in lt.iterator(listas_vertices_2):
+            if vertices_Fuertemente_conectados(catalog, vertice1, vertice2):
+                respuesta = True
+                break
+    return respuesta
+
+
+def vertices_Fuertemente_conectados(catalog, vertice1, vertice2):
+    info_kosaraju = catalog['Kosaraju']
+    f_conectados = scc.stronglyConnected(info_kosaraju, vertice1, vertice2)
+    return f_conectados
+
+
+
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
