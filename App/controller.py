@@ -40,8 +40,8 @@ def initCatalog():
 
 # Funciones para la carga de datos
 def loadData(catalog):
-    loadLP(catalog)
     loadCountries(catalog)
+    loadLP(catalog)
     loadConnections(catalog)
 
 

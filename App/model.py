@@ -59,23 +59,27 @@ def newCatalog():
 def addLP_Mapa(catalog, lp_agregar):
     mapa_landing_points = catalog['landing_points']
     lp_agregar['lista_vertices'] = lt.newList('ARRAY_LIST')
+    lp_agregar['country'] = lp_agregar['name'].split(', ')[1]
     mp.put(mapa_landing_points, lp_agregar['landing_point_id'], lp_agregar)
+    
 
 
 
 def addCountry_Mapa(catalog, country_agregar):
     countries_mapa = catalog['countries']
     mp.put(countries_mapa, country_agregar['CountryName'], country_agregar)
+    gr.insertVertex(catalog['grafo'], country_agregar['CapitalName'])
 
 def addConexion(catalog, conexion):
+    cable = conexion['cable_id']
     o_lp = conexion['origin_lp']
     d_lp = conexion['destiny_lp']
-    v_origen = o_lp + '-' + conexion['cable_id']
-    v_destino = d_lp + '-' + conexion['cable_id']
-    addLP_graph(catalog, v_origen)
-    addLP_graph(catalog, v_destino)
-    addVertice_a_lista_vertices_de_LP(catalog, o_lp, conexion['cable_id'])
-    addVertice_a_lista_vertices_de_LP(catalog, d_lp, conexion['cable_id'])
+    v_origen = o_lp + '-' + cable
+    v_destino = d_lp + '-' + cable
+    addLP_graph(catalog, o_lp, cable)
+    addLP_graph(catalog, d_lp, cable)
+    addVertice_a_lista_vertices_de_LP(catalog, o_lp, cable)
+    addVertice_a_lista_vertices_de_LP(catalog, d_lp, cable)
     distancia = calcularDistancia(catalog, o_lp, d_lp)
     addConexion_graph(catalog, v_origen, v_destino, distancia)
     addCable_Mapa(catalog, conexion)
@@ -111,9 +115,21 @@ def addCable_Mapa(catalog, conexion):
 
 
 def calcularDistancia(catalog, lp_1, lp_2):
+    #la forma de usar esta funcion es que para lp1 siempre se debe ingresar un landing point,
+    # para lp2 se puede ingresar un pais y se le obtendran las coordenadas del mapa_paises
     mapa_lps = catalog['landing_points']
-    lat1, lon1 = me.getValue(mp.get(mapa_lps, lp_1))['latitude'], me.getValue(mp.get(mapa_lps, lp_1))['longitude']
-    lat2, lon2 = me.getValue(mp.get(mapa_lps, lp_2))['latitude'], me.getValue(mp.get(mapa_lps, lp_2))['longitude']
+    mapa_paises = catalog['countries']
+    
+    lp_1 =  me.getValue(mp.get(mapa_lps, lp_1))
+    lat1, lon1 = lp_1['latitude'], lp_1['longitude']
+    if mp.contains(mapa_lps, lp_2):
+        lp_2 = me.getValue(mp.get(mapa_lps, lp_2))
+        lat2, lon2 = lp_2['latitude'], lp_2['longitude']
+    elif mp.contains(mapa_paises, lp_2):
+        #lp_2 en realidad es un nombre de un pais
+        lp_2 = me.getValue(mp.get(mapa_paises, lp_2))
+        lat2, lon2 = lp_2['CapitalLatitude'], lp_2['CapitalLongitude']
+
 
     R = 6373.0
 
@@ -128,10 +144,21 @@ def calcularDistancia(catalog, lp_1, lp_2):
     return distance
 
 
-def addLP_graph(catalog, lp_cable):
+def addLP_graph(catalog, lp, cable):
+    mapa_lps = catalog['landing_points']
+    mapa_paises = catalog['countries']
+    lp_cable = lp + '-' + cable
     grafo = catalog['grafo']
     if not gr.containsVertex(grafo, lp_cable):
         gr.insertVertex(grafo, lp_cable)
+
+    #de aqui en adelante lo que se hace es conectar este vertice con la capital de su pais
+    pais = me.getValue(mp.get(mapa_lps, lp))['country']
+    capital = me.getValue(mp.get(mapa_paises, pais))['CapitalName']
+    distancia = calcularDistancia(catalog, lp, pais)
+
+    addConexion_graph(catalog, lp_cable, capital, distancia)
+    addConexion_graph(catalog, capital, lp_cable, distancia)
 
 def addConexion_graph(catalog, vertice_origen, vertice_destino, distancia):
     origen = vertice_origen
