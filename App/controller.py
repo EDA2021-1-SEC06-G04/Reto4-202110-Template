@@ -23,6 +23,10 @@
 import config as cf
 import model
 import csv
+from DISClib.ADT import list as lt
+from DISClib.ADT import map as mp
+from DISClib.DataStructures import mapentry as me
+from DISClib.ADT.graph import gr
 
 fileConnections = 'connections.csv'
 fileLP = 'landing_points.csv'
@@ -40,23 +44,36 @@ def initCatalog():
 
 # Funciones para la carga de datos
 def loadData(catalog):
-    loadLP(catalog)
-    loadCountries(catalog)
-    loadConnections(catalog)
+    ultimo_pais = loadCountries(catalog)
+    primer_lp = loadLP(catalog)
+    total_conex_lps = loadConnections(catalog)
+
+    return total_conex_lps, primer_lp, ultimo_pais
 
 
 def loadLP(catalog):
     file = cf.data_dir + fileLP
     input_file = csv.DictReader(open(file, encoding="utf-8"),
                                 delimiter=",")
+    primer_lp = None
+    contador = 0
     for lp in input_file:
+        contador = contador + 1
         lp_agregar = {}
         lp_agregar['landing_point_id'] = lp['landing_point_id']
         lp_agregar['id'] = lp['id']
         lp_agregar['name'] = lp['name']
         lp_agregar['latitude'] = float(lp['latitude'])
         lp_agregar['longitude'] = float(lp['longitude'])
-        model.addLP_Mapa(catalog, lp_agregar)
+        if contador==1:
+            primer_lp = model.addLP_Mapa(catalog, lp_agregar)
+        else:
+            model.addLP_Mapa(catalog, lp_agregar)
+    return primer_lp
+
+        
+        
+            
 
 
 def loadCountries(catalog):
@@ -64,6 +81,7 @@ def loadCountries(catalog):
     input_file = csv.DictReader(open(file, encoding="utf-8"),
                                 delimiter=",")
     for country in input_file:
+        
         if not country['CountryName'] == '':
             country_agregar = {}
             country_agregar['CountryName'] = country['CountryName']
@@ -76,11 +94,14 @@ def loadCountries(catalog):
             country_agregar['Internet_users'] = int(country['Internet users'].replace('.',''))
             model.addCountry_Mapa(catalog, country_agregar)
     
+    return lt.lastElement(mp.valueSet(catalog['countries']))
+    
 
 def loadConnections(catalog):
     file = cf.data_dir + fileConnections
     input_file = csv.DictReader(open(file, encoding="utf-8-sig"),
                                 delimiter=",")
+    total_conex_lps = 0
     for filacsv in input_file:
         conexion = {'tipo': 'cable'}
         conexion['destiny_lp'] = filacsv['destination']
@@ -95,7 +116,9 @@ def loadConnections(catalog):
         conexion['cable_id'] = filacsv['cable_id']
         conexion['cable_owners'] = filacsv['owners']
         model.addConexion(catalog, conexion)
+        total_conex_lps = total_conex_lps + 1
     model.conectarVertices_mismoLPs(catalog)
+    return total_conex_lps
 
 
 

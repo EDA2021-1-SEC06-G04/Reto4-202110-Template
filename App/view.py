@@ -24,7 +24,10 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
-import folium
+from DISClib.ADT import map as mp
+from DISClib.DataStructures import mapentry as me
+from DISClib.ADT.graph import gr
+#import folium
 #from branca.element import Figure
 #import webbrowser
 assert cf
@@ -47,6 +50,7 @@ def printMenu():
     print("6- Consultar el los países afectados por la falla de un landing point determinado")
     print("7- (BONO) Consultar los países conectados al cable del país con ancho de banda máximo garantizable")
     print("8- (BONO) Consultar ruta mínima en número de saltos para enviar información entre dos direcciones IP")
+    print('0- Salir/Exit')
 
 
 catalog = None
@@ -62,7 +66,19 @@ while True:
         #Inicializamos el catálogo
         catalog = controller.initCatalog()
         #Cargamos el catálogo
-        controller.loadData(catalog)
+        total_conex_lps, primer_lp, ultimo_pais = controller.loadData(catalog)
+        total_lps = mp.size(catalog['landing_points'])
+        
+        total_paises = mp.size(catalog['countries'])
+
+        print('El total de landing points cargados es {}.'.format(total_lps))
+        print('El total de conexiones entre landing points cargadas es {}.'.format(total_conex_lps))
+        print('El total de paises cargados es {}.'.format(total_paises))
+        
+        print('''El primer landing point cargado es {}, con codigo {}
+        y sus coordenadas latitud y longitud son: ({}), ({}). '''.format(primer_lp['name'], primer_lp['landing_point_id']
+        , primer_lp['latitude'], primer_lp['longitude']))
+        
 
 
 
