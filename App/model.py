@@ -157,6 +157,7 @@ def addLP_graph(catalog, lp, cable):
         gr.insertVertex(grafo, lp_cable)
 
     #de aqui en adelante lo que se hace es conectar este vertice con la capital de su pais
+#    print(lp, mp.contains(mapa_lps, lp))
     pais = me.getValue(mp.get(mapa_lps, lp))['country']
     capital = me.getValue(mp.get(mapa_paises, pais))['CapitalName']
     distancia = calcularDistancia(catalog, lp, pais)

@@ -46,6 +46,8 @@ def initCatalog():
 def loadData(catalog):
     ultimo_pais = loadCountries(catalog)
     primer_lp = loadLP(catalog)
+    for lp in lt.iterator(mp.keySet(catalog['landing_points'])):
+        print(lp)
     total_conex_lps = loadConnections(catalog)
 
     return total_conex_lps, primer_lp, ultimo_pais
@@ -69,7 +71,9 @@ def loadLP(catalog):
             primer_lp = model.addLP_Mapa(catalog, lp_agregar)
         else:
             model.addLP_Mapa(catalog, lp_agregar)
-        return primer_lp
+
+        print(contador)
+    return primer_lp
 
         
         
