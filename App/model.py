@@ -64,6 +64,7 @@ def addLP_Mapa(catalog, lp_agregar):
     else:
         lp_agregar['country'] = lp_agregar['name']
     mp.put(mapa_landing_points, lp_agregar['landing_point_id'], lp_agregar)
+    return lp_agregar
     
 
 
