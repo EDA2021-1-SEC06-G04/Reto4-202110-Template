@@ -259,15 +259,20 @@ def vertices_Fuertemente_conectados(catalog, vertice1, vertice2):
 def lpInterconexion(catalog):
     mapa_grande = catalog['landing_points']
     rbt_nuevo = om.newMap(omaptype='RBT')
-    total = 0
+#    total = 0
+
     for lp in lt.iterator(mp.valueSet(mapa_grande)):
         cant_vertices = lt.size(lp['lista_vertices'])
-        total = total + cant_vertices
-        if not om.contains(rbt_nuevo, lp['landing_point_id']):
-            lista_value = lt.newList(datastructure='ARRAY_LIST')
-            lt.addLast(lista_value, (lp['landing_point_id'], cant_vertices))
-            om.put(rbt_nuevo, lp['landing_point_id'], lista_value)
-    return rbt_nuevo, total
+#        total = total + cant_vertices
+        if not om.contains(rbt_nuevo, cant_vertices):
+            lista_lps = lt.newList(datastructure='ARRAY_LIST')
+            lt.addLast(lista_lps, (lp['landing_point_id'], cant_vertices))
+            om.put(rbt_nuevo, cant_vertices, lista_lps)
+        else:
+            lista_lps = me.getValue(om.get(rbt_nuevo, cant_vertices))
+            lt.addLast(lista_lps, (lp['landing_point_id'], cant_vertices))
+
+    return rbt_nuevo
     
 
 

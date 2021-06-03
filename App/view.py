@@ -94,19 +94,20 @@ while True:
 
     elif int(inputs[0]) == 3:
         print("Cargando información de los landing points...")
-        listaLP, cant_vertices = controller.lpInterconexion(catalog)
+        lista_listasLP, cant_vertices = controller.lpInterconexion(catalog)
         print("----------------------------------- Total de cables conectados a los landing points -----------------------------------")
         print("TOTAL: {}".format(cant_vertices))
         print("---------------------- Lista primeros 10 landing points con más puntos de interconexión a cables ----------------------")
         contador = 0
-        for lp in lt.iterator(listaLP):
-            contador = contador + 1
-            print("TOP {}:".format(contador))
-            print("Nombre: {}".format(lp['name']))
-            print("País: {}".format(lp['country']))
-            print("Identificador: {}".format(lp['landing_point_id']))
-            if contador == 10:
-                break
+        for lista in lt.iterator(lista_listasLP):
+            for lp in lt.iterator(lista):
+                contador = contador + 1
+                print("TOP {}:".format(contador))
+                print("Nombre: {}".format(lp['name']))
+                print("País: {}".format(lp['country']))
+                print("Identificador: {}".format(lp['landing_point_id']))
+                if contador == 10:
+                    break
         
             
             

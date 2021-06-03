@@ -122,14 +122,7 @@ def loadConnections(catalog):
     return total_conex_lps
 
 
-# -------- REQ 2 ---------- #
-def lpInterconexion(catalog):
-    funcion = model.lpInterconexion(catalog)
-    rbt = funcion[0]
-    lista_LandingPoints = om.keySet(rbt)
-    total = funcion[1]
 
-    return lista_LandingPoints, total
 
 
 
@@ -140,6 +133,7 @@ def lpInterconexion(catalog):
 
 # Funciones de consulta sobre el catálogo
 
+# ----------- REQ 1 ------------ #
 def req1(catalog, landing_point1, landing_point2):
     #ESTOS SON LP, NO LP-CABLES ENTONCES NO SON VERTICES TODAVIA
     info_Kosaraju = catalog['Kosaraju']
@@ -150,4 +144,14 @@ def req1(catalog, landing_point1, landing_point2):
     bool_fuerte_conex = model.lp_Fuertemente_conectados(catalog, landing_point1, landing_point2)
 
     return numero_clusters, bool_fuerte_conex
+
+
+# -------- REQ 2 ---------- #
+def lpInterconexion(catalog):
+    funcion = model.lpInterconexion(catalog)
+    rbt = funcion[0]
+    lista_listas_LandingPoints = om.valueSet(rbt)
+    total = funcion[1]
+
+    return lista_listas_LandingPoints, total
     
