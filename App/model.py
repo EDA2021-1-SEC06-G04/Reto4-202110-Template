@@ -24,6 +24,7 @@
  * Dario Correal - Version inicial
  """
 
+from DISClib.ADT.orderedmap import newMap
 from math import sin, cos, sqrt, atan2, radians
 
 import config as cf
@@ -31,6 +32,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.ADT import orderedmap as om
 from DISClib.ADT.graph import gr
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
@@ -253,6 +255,20 @@ def vertices_Fuertemente_conectados(catalog, vertice1, vertice2):
     return f_conectados
 
 
+# ----------------------------------------------------- REQ 2 ----------------------------------------------------- #
+def lpInterconexion(catalog):
+    mapa_grande = catalog['landing_points']
+    rbt_nuevo = om.newMap(omaptype='RBT')
+    total = 0
+    for lp in lt.iterator(mp.valueSet(mapa_grande)):
+        cant_vertices = lt.size(lp['lista_vertices'])
+        total = total + cant_vertices
+        if not om.contains(rbt_nuevo, lp['landing_point_id']):
+            lista_value = lt.newList(datastructure='ARRAY_LIST')
+            lt.addLast(lista_value, (lp['landing_point_id'], cant_vertices))
+            om.put(rbt_nuevo, lp['landing_point_id'], lista_value)
+    return rbt_nuevo, total
+    
 
 
 

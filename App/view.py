@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from typing import List
 import config as cf
 import sys
 import controller
@@ -90,6 +91,27 @@ while True:
 
     elif int(inputs[0]) == 2:
         print('Ingresa el primer landing point')
+
+    elif int(inputs[0]) == 3:
+        print("Cargando información de los landing points...")
+        listaLP, cant_vertices = controller.lpInterconexion(catalog)
+        print("----------------------------------- Total de cables conectados a los landing points -----------------------------------")
+        print("TOTAL: {}".format(cant_vertices))
+        print("---------------------- Lista primeros 10 landing points con más puntos de interconexión a cables ----------------------")
+        contador = 0
+        for lp in lt.iterator(listaLP):
+            contador = contador + 1
+            print("TOP {}:".format(contador))
+            print("Nombre: {}".format(lp['name']))
+            print("País: {}".format(lp['country']))
+            print("Identificador: {}".format(lp['landing_point_id']))
+            if contador == 10:
+                break
+        
+            
+            
+
+
 
     else:
         sys.exit(0)

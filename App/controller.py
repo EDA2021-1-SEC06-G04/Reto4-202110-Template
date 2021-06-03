@@ -26,6 +26,7 @@ import csv
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
+from DISClib.ADT import orderedmap as om
 from DISClib.ADT.graph import gr
 
 fileConnections = 'connections.csv'
@@ -121,7 +122,14 @@ def loadConnections(catalog):
     return total_conex_lps
 
 
+# -------- REQ 2 ---------- #
+def lpInterconexion(catalog):
+    funcion = model.lpInterconexion(catalog)
+    rbt = funcion[0]
+    lista_LandingPoints = om.keySet(rbt)
+    total = funcion[1]
 
+    return lista_LandingPoints, total
 
 
 
