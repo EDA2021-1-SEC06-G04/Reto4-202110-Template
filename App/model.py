@@ -74,6 +74,9 @@ def addLP_Mapa(catalog, lp_agregar):
     else:
         lp_agregar['country'] = lp_agregar['name']
     mp.put(mapa_landing_points, lp_agregar['landing_point_id'], lp_agregar)
+
+    mapa_landing_points2 = catalog['landing_points2']
+    mp.put(mapa_landing_points2, lp_agregar['name'], lp_agregar['landing_point_id'])
     return lp_agregar
     
 
@@ -235,8 +238,11 @@ def Calcular_clusters(catalog):
     return cantidad
 
 
-def lp_Fuertemente_conectados(catalog, landing_point1, landing_point2):
+def lp_Fuertemente_conectados(catalog, landing_point1_nombre, landing_point2_nombre):
     mapa_lps = catalog['landing_points']
+    mapa_lps2 = catalog['landing_points2']
+    landing_point1 = me.getValue(mp.get(mapa_lps2, landing_point1_nombre))
+    landing_point2 = me.getValue(mp.get(mapa_lps2, landing_point2_nombre))
     #creo que no toca coger la lista y chequear todos, solo basta con uno de cada uno
     listas_vertices_1 = me.getValue(mp.get(mapa_lps, landing_point1))['lista_vertices']
     listas_vertices_2 = me.getValue(mp.get(mapa_lps, landing_point2))['lista_vertices']
@@ -267,11 +273,11 @@ def lpInterconexion(catalog):
 #        total = total + cant_vertices
         if not om.contains(rbt_nuevo, cant_vertices):
             lista_lps = lt.newList(datastructure='ARRAY_LIST')
-            lt.addLast(lista_lps, (lp['landing_point_id'], lista_vertices))
+            lt.addLast(lista_lps, (lp, lista_vertices))
             om.put(rbt_nuevo, cant_vertices, lista_lps)
         else:
             lista_lps = me.getValue(om.get(rbt_nuevo, cant_vertices))
-            lt.addLast(lista_lps, (lp['landing_point_id'], lista_vertices))
+            lt.addLast(lista_lps, (lp, lista_vertices))
 
     return rbt_nuevo
     
@@ -296,10 +302,10 @@ def CompareIntegersOM(int1, int2):
     """
     Compara dos landing points
     """
-    int2 = int2['key']
+#    int2 = int2['key']
     if (int1 == int2):
         return 0
-    elif (int1 > int2):
+    elif (int1 < int2):
         return 1
     else:
         return -1

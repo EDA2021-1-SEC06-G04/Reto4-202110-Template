@@ -135,14 +135,14 @@ def loadConnections(catalog):
 # Funciones de consulta sobre el catálogo
 
 # ----------- REQ 1 ------------ #
-def req1(catalog, landing_point1, landing_point2):
+def req1(catalog, landing_point1_nombre, landing_point2_nombre):
     #ESTOS SON LP, NO LP-CABLES ENTONCES NO SON VERTICES TODAVIA
     info_Kosaraju = catalog['Kosaraju']
     if  info_Kosaraju == None:
         model.ejecutar_Kosaraju(catalog)
     
     numero_clusters = model.Calcular_clusters(catalog)
-    bool_fuerte_conex = model.lp_Fuertemente_conectados(catalog, landing_point1, landing_point2)
+    bool_fuerte_conex = model.lp_Fuertemente_conectados(catalog, landing_point1_nombre, landing_point2_nombre)
 
     return numero_clusters, bool_fuerte_conex
 
@@ -154,17 +154,17 @@ def lpInterconexion(catalog):
     cola_retornar = qu.newQueue()
     total_cables_resultado = mp.newMap(loadfactor=4.0)
     contador = 0
+    
     for lista in lt.iterator(lista_listas_LandingPoints):
         for tupla_lp_listavertices in lt.iterator(lista):
-            if contador < 9:
+            if contador > 9:
                 break
             else:
                 lista_vertices = tupla_lp_listavertices[1]
                 for vertice in lt.iterator(lista_vertices):
 #                    cable = vertice.split('-')[2]
-                    mp.put(total_cables_resultado, vertice)
+                    mp.put(total_cables_resultado, vertice, vertice)
 
-                tupla_lp_listavertices[1] = lt.size(lista_vertices)
                 qu.enqueue(cola_retornar, tupla_lp_listavertices)
                 contador = contador + 1
 

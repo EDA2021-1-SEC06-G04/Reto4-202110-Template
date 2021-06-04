@@ -84,8 +84,6 @@ while True:
         print('''El primer landing point cargado es {}, con codigo {}
         y sus coordenadas latitud y longitud son: ({}), ({}). '''.format(primer_lp['name'], primer_lp['landing_point_id']
         , primer_lp['latitude'], primer_lp['longitude']))
-
-        print(mp.size(catalog['cables']))
         
 
 
@@ -104,6 +102,7 @@ while True:
             cant_vertices = lt.size(listavertices)
             contador = contador + 1
             print("TOP {}:".format(contador))
+#            print(lp)
             print("Nombre: {}".format(lp['name']))
             print("País: {}".format(lp['country']))
             print("Identificador: {}".format(lp['landing_point_id']))
