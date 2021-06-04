@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+#from DISClib.ADT.orderedmap import size
 from typing import List
 import config as cf
 import sys
@@ -84,12 +85,25 @@ while True:
         print('''El primer landing point cargado es {}, con codigo {}
         y sus coordenadas latitud y longitud son: ({}), ({}). '''.format(primer_lp['name'], primer_lp['landing_point_id']
         , primer_lp['latitude'], primer_lp['longitude']))
+
+        print('Cantidad vertices = {}'.format(gr.numVertices(catalog['grafo'])))
+        print(mp.size(catalog['landing_points2']))
         
 
 
 
     elif int(inputs[0]) == 2:
-        print('Ingresa el primer landing point')
+        print('Ingresa el nombre del primer landing point:')
+        nom_lp1 = input('')
+        print('Ingresa el nombre del segundo landing point:')
+        nom_lp2 = input('')
+        num_scc, fconec = controller.req1(catalog, nom_lp1, nom_lp2)
+        print('-------------------------------------------------------------------------------------------------------------')
+        print('El total de componentes fuertemente conectados o clusters es : {}'.format(num_scc))
+        respuesta = 'NO'
+        if fconec:
+            respuesta = 'SI'
+        print('Estos dos landing points {} estan fuertemente conectados.'.format(respuesta))
 
     elif int(inputs[0]) == 3:
         print("Cargando información de los landing points...")
