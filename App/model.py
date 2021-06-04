@@ -258,19 +258,20 @@ def vertices_Fuertemente_conectados(catalog, vertice1, vertice2):
 # ----------------------------------------------------- REQ 2 ----------------------------------------------------- #
 def lpInterconexion(catalog):
     mapa_grande = catalog['landing_points']
-    rbt_nuevo = om.newMap(omaptype='RBT')
+    rbt_nuevo = om.newMap(omaptype='RBT', comparefunction=CompareIntegersOM)
 #    total = 0
 
     for lp in lt.iterator(mp.valueSet(mapa_grande)):
-        cant_vertices = lt.size(lp['lista_vertices'])
+        lista_vertices = lp['lista_vertices']
+        cant_vertices = lt.size(lista_vertices)
 #        total = total + cant_vertices
         if not om.contains(rbt_nuevo, cant_vertices):
             lista_lps = lt.newList(datastructure='ARRAY_LIST')
-            lt.addLast(lista_lps, (lp['landing_point_id'], cant_vertices))
+            lt.addLast(lista_lps, (lp['landing_point_id'], lista_vertices))
             om.put(rbt_nuevo, cant_vertices, lista_lps)
         else:
             lista_lps = me.getValue(om.get(rbt_nuevo, cant_vertices))
-            lt.addLast(lista_lps, (lp['landing_point_id'], cant_vertices))
+            lt.addLast(lista_lps, (lp['landing_point_id'], lista_vertices))
 
     return rbt_nuevo
     
@@ -291,6 +292,17 @@ def CompareLandingPoints(landing_point, keyLP):
     else:
         return -1
 
+def CompareIntegersOM(int1, int2):
+    """
+    Compara dos landing points
+    """
+    int2 = int2['key']
+    if (int1 == int2):
+        return 0
+    elif (int1 > int2):
+        return 1
+    else:
+        return -1
 
 
 # Funciones de ordenamiento

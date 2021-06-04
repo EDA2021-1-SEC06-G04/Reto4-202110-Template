@@ -27,6 +27,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import orderedmap as om
+from DISClib.ADT import queue as qu
 from DISClib.ADT.graph import gr
 
 fileConnections = 'connections.csv'
@@ -148,10 +149,27 @@ def req1(catalog, landing_point1, landing_point2):
 
 # -------- REQ 2 ---------- #
 def lpInterconexion(catalog):
-    funcion = model.lpInterconexion(catalog)
-    rbt = funcion[0]
+    rbt = model.lpInterconexion(catalog)
     lista_listas_LandingPoints = om.valueSet(rbt)
-    total = funcion[1]
+    cola_retornar = qu.newQueue()
+    total_cables_resultado = mp.newMap(loadfactor=4.0)
+    contador = 0
+    for lista in lt.iterator(lista_listas_LandingPoints):
+        for tupla_lp_listavertices in lt.iterator(lista):
+            if contador < 9:
+                break
+            else:
+                lista_vertices = tupla_lp_listavertices[1]
+                for vertice in lt.iterator(lista_vertices):
+#                    cable = vertice.split('-')[2]
+                    mp.put(total_cables_resultado, vertice)
 
-    return lista_listas_LandingPoints, total
+                tupla_lp_listavertices[1] = lt.size(lista_vertices)
+                qu.enqueue(cola_retornar, tupla_lp_listavertices)
+                contador = contador + 1
+
+
+
+    total_cables_resultado = mp.size(total_cables_resultado)
+    return cola_retornar, total_cables_resultado
     

@@ -28,6 +28,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT.graph import gr
+from DISClib.ADT import queue as qu
 #import folium
 #from branca.element import Figure
 #import webbrowser
@@ -94,20 +95,22 @@ while True:
 
     elif int(inputs[0]) == 3:
         print("Cargando información de los landing points...")
-        lista_listasLP, cant_vertices = controller.lpInterconexion(catalog)
-        print("----------------------------------- Total de cables conectados a los landing points -----------------------------------")
-        print("TOTAL: {}".format(cant_vertices))
+        cola_lp, cant_cables_tot = controller.lpInterconexion(catalog)
+        
         print("---------------------- Lista primeros 10 landing points con más puntos de interconexión a cables ----------------------")
         contador = 0
-        for lista in lt.iterator(lista_listasLP):
-            for lp in lt.iterator(lista):
-                contador = contador + 1
-                print("TOP {}:".format(contador))
-                print("Nombre: {}".format(lp['name']))
-                print("País: {}".format(lp['country']))
-                print("Identificador: {}".format(lp['landing_point_id']))
-                if contador == 10:
-                    break
+        while not qu.isEmpty(cola_lp):
+            lp, listavertices = qu.dequeue(cola_lp)
+            cant_vertices = lt.size(listavertices)
+            contador = contador + 1
+            print("TOP {}:".format(contador))
+            print("Nombre: {}".format(lp['name']))
+            print("País: {}".format(lp['country']))
+            print("Identificador: {}".format(lp['landing_point_id']))
+            print("Cantidad cables : {} ".format(cant_vertices))
+            print('--------------------------------------------------------------------------------------')
+        print("----------------------------------- Total de cables conectados a estos landing points -----------------------------------")
+        print("TOTAL: {}".format(cant_cables_tot))
         
             
             
