@@ -112,15 +112,18 @@ while True:
         
         print("---------------------- Lista primeros 10 landing points con más puntos de interconexión a cables ----------------------")
         contador = 0
-        for lista in lt.iterator(listaLP):
-            for lp in lista:
-                contador = contador + 1
-                print("TOP {}:".format(contador))
-                print("Nombre: {}".format(lp['name']))
-                print("País: {}".format(lp['country']))
-                print("Identificador: {}".format(lp['landing_point_id']))
-                if contador == 10:
-                    break
+        while not qu.isEmpty(cola_lp):
+            lp, listavertices = qu.dequeue(cola_lp)
+            cant_cables = lt.size(listavertices)
+            contador = contador + 1
+            
+            print("TOP {}:".format(contador))
+            print("Nombre: {}".format(lp['name']))
+            print("País: {}".format(lp['country']))
+            print("Identificador: {}".format(lp['landing_point_id']))
+            print('Con {} cables distintos.'.format(cant_cables))
+            print('--------------------------------------------------------------------------------------------------')
+                
 
     
 

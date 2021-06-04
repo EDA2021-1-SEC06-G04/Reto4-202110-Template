@@ -123,20 +123,6 @@ def loadConnections(catalog):
     return total_conex_lps
 
 
-# ------------------------------------------------------------- REQ 2 ------------------------------------------------------------- #
-def lpInterconexion(catalog):
-    funcion = model.lpInterconexion(catalog)
-    rbt = funcion[0]
-    lista_LandingPoints = om.keySet(rbt)
-    total = funcion[1]
-
-
-
-
-# ------------------------------------------------------------- REQ 3 ------------------------------------------------------------- #
-def RutaMinima(paisA, paisB, catalog):
-    ruta = model.RutaMinima(paisA, paisB, catalog)
-    return ruta
 
 
 
@@ -184,4 +170,14 @@ def lpInterconexion(catalog):
 
     total_cables_resultado = mp.size(total_cables_resultado)
     return cola_retornar, total_cables_resultado
+
+
+    
+# ------------------------------------------------------------- REQ 3 ------------------------------------------------------------- #
+def RutaMinima(paisA, paisB, catalog):
+    ruta = model.RutaMinima(paisA, paisB, catalog)
+    return ruta
+
+
+
     

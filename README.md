@@ -21,7 +21,3 @@ Este directorio contiene todo el código de base que se entrega para el funciona
 Este directorio contiene las pruebas realizadas a los TADs, Estructuras de Datos y Algoritmos.
 
 
-que falta en req 1:
-
-hacer el view usando esa nueva estructura para acceder a la info del LP usando el NOMBRE
-
