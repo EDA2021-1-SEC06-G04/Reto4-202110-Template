@@ -270,6 +270,29 @@ def lpInterconexion(catalog):
     return rbt_nuevo, total
     
 
+# ----------------------------------------------------- REQ 3 ----------------------------------------------------- #
+def RutaMinima(paisA, paisB, catalog):
+    mapaLP = catalog['landing_points']
+    mapaCountries = catalog['countries']
+    cables = catalog['cables']
+    grafo = catalog['grafo']
+
+    capitalA = me.getValue(om.get(mapaCountries, paisA))['capital_name']
+    capitalB = me.getValue(om.get(mapaCountries, paisB))['capital_name']
+    #latA = me.getValue(om.get(mapaCountries, paisA))['CapitalLatitude']
+    #latB = me.getValue(om.get(mapaCountries, paisB))['CapitalLatitude']
+    #lonA = me.getValue(om.get(mapaCountries, paisA))['CapitalLongitude']
+    #lonB = me.getValue(om.get(mapaCountries, paisB))['CapitalLongitude']
+
+    '''for lp in lt.iterator(om.valueSet(mapaLP)):
+        if lp['latitude'] == latA and lp['longitude'] == lonA:
+            idLandingPointA = lp['landing_point_id']
+        elif lp['latitude'] == latB and lp['longitude'] == lonB:
+            idLandingPointB = lp['landing_point_id']'''
+    
+    djk.Dijkstra(grafo, capitalA)
+    
+
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista

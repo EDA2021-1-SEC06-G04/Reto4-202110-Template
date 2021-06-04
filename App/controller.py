@@ -122,7 +122,7 @@ def loadConnections(catalog):
     return total_conex_lps
 
 
-# -------- REQ 2 ---------- #
+# ------------------------------------------------------------- REQ 2 ------------------------------------------------------------- #
 def lpInterconexion(catalog):
     funcion = model.lpInterconexion(catalog)
     rbt = funcion[0]
@@ -131,6 +131,12 @@ def lpInterconexion(catalog):
 
     return lista_LandingPoints, total
 
+
+
+# ------------------------------------------------------------- REQ 3 ------------------------------------------------------------- #
+def RutaMinima(paisA, paisB, catalog):
+    ruta = model.RutaMinima(paisA, paisB, catalog)
+    return ruta
 
 
 
