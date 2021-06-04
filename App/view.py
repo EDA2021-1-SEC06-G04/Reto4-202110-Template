@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+#from DISClib.ADT.orderedmap import size
 from typing import List
 import config as cf
 import sys
@@ -28,6 +29,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT.graph import gr
+from DISClib.ADT import queue as qu
 #import folium
 #from branca.element import Figure
 #import webbrowser
@@ -84,21 +86,30 @@ while True:
         y sus coordenadas latitud y longitud son: ({}), ({}). '''.format(primer_lp['name'], primer_lp['landing_point_id']
         , primer_lp['latitude'], primer_lp['longitude']))
 
-        print(mp.size(catalog['cables']))
+        print('Cantidad vertices = {}'.format(gr.numVertices(catalog['grafo'])))
+        print(mp.size(catalog['landing_points2']))
         
 
 
 
     elif int(inputs[0]) == 2:
-        # -------------------------------------------------- REQ 1 -------------------------------------------------- #
-        print('Ingresa el primer landing point')
+        print('Ingresa el nombre del primer landing point:')
+        nom_lp1 = input('')
+        print('Ingresa el nombre del segundo landing point:')
+        nom_lp2 = input('')
+        num_scc, fconec = controller.req1(catalog, nom_lp1, nom_lp2)
+        print('-------------------------------------------------------------------------------------------------------------')
+        print('El total de componentes fuertemente conectados o clusters es : {}'.format(num_scc))
+        respuesta = 'NO'
+        if fconec:
+            respuesta = 'SI'
+        print('Estos dos landing points {} estan fuertemente conectados.'.format(respuesta))
 
     elif int(inputs[0]) == 3:
         # -------------------------------------------------- REQ 2 -------------------------------------------------- #
         print("Cargando información de los landing points...")
-        listaLP, cant_vertices = controller.lpInterconexion(catalog)
-        print("----------------------------------- Total de cables conectados a los landing points -----------------------------------")
-        print("TOTAL: {}".format(cant_vertices))
+        cola_lp, cant_cables_tot = controller.lpInterconexion(catalog)
+        
         print("---------------------- Lista primeros 10 landing points con más puntos de interconexión a cables ----------------------")
         contador = 0
         for lista in lt.iterator(listaLP):
@@ -120,6 +131,19 @@ while True:
         print("Indique el País B (destino):")
         paisB = input("\n")
         controller.RutaMinima(paisA, paisB, catalog)
+        while not qu.isEmpty(cola_lp):
+            lp, listavertices = qu.dequeue(cola_lp)
+            cant_vertices = lt.size(listavertices)
+            contador = contador + 1
+            print("TOP {}:".format(contador))
+#            print(lp)
+            print("Nombre: {}".format(lp['name']))
+            print("País: {}".format(lp['country']))
+            print("Identificador: {}".format(lp['landing_point_id']))
+            print("Cantidad cables : {} ".format(cant_vertices))
+            print('--------------------------------------------------------------------------------------')
+        print("----------------------------------- Total de cables conectados a estos landing points -----------------------------------")
+        print("TOTAL: {}".format(cant_cables_tot))
         
 
     elif int(input[0]) == 5:

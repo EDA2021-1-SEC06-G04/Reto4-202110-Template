@@ -27,6 +27,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import orderedmap as om
+from DISClib.ADT import queue as qu
 from DISClib.ADT.graph import gr
 
 fileConnections = 'connections.csv'
@@ -129,7 +130,6 @@ def lpInterconexion(catalog):
     lista_LandingPoints = om.keySet(rbt)
     total = funcion[1]
 
-    return lista_LandingPoints, total
 
 
 
@@ -146,14 +146,42 @@ def RutaMinima(paisA, paisB, catalog):
 
 # Funciones de consulta sobre el catálogo
 
-def req1(catalog, landing_point1, landing_point2):
+# ----------- REQ 1 ------------ #
+def req1(catalog, landing_point1_nombre, landing_point2_nombre):
     #ESTOS SON LP, NO LP-CABLES ENTONCES NO SON VERTICES TODAVIA
     info_Kosaraju = catalog['Kosaraju']
     if  info_Kosaraju == None:
         model.ejecutar_Kosaraju(catalog)
     
     numero_clusters = model.Calcular_clusters(catalog)
-    bool_fuerte_conex = model.lp_Fuertemente_conectados(catalog, landing_point1, landing_point2)
+    bool_fuerte_conex = model.lp_Fuertemente_conectados(catalog, landing_point1_nombre, landing_point2_nombre)
 
     return numero_clusters, bool_fuerte_conex
+
+
+# -------- REQ 2 ---------- #
+def lpInterconexion(catalog):
+    rbt = model.lpInterconexion(catalog)
+    lista_listas_LandingPoints = om.valueSet(rbt)
+    cola_retornar = qu.newQueue()
+    total_cables_resultado = mp.newMap(loadfactor=4.0)
+    contador = 0
+    
+    for lista in lt.iterator(lista_listas_LandingPoints):
+        for tupla_lp_listavertices in lt.iterator(lista):
+            if contador > 9:
+                break
+            else:
+                lista_vertices = tupla_lp_listavertices[1]
+                for vertice in lt.iterator(lista_vertices):
+#                    cable = vertice.split('-')[2]
+                    mp.put(total_cables_resultado, vertice, vertice)
+
+                qu.enqueue(cola_retornar, tupla_lp_listavertices)
+                contador = contador + 1
+
+
+
+    total_cables_resultado = mp.size(total_cables_resultado)
+    return cola_retornar, total_cables_resultado
     

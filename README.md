@@ -22,6 +22,6 @@ Este directorio contiene las pruebas realizadas a los TADs, Estructuras de Datos
 
 
 que falta en req 1:
-falta cargar la nueva estructura catalog['landing_points2']
+
 hacer el view usando esa nueva estructura para acceder a la info del LP usando el NOMBRE
 
