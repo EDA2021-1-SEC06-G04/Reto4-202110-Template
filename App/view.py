@@ -149,7 +149,7 @@ while True:
         print("TOTAL: {}".format(cant_cables_tot))
         
 
-    elif int(input[0]) == 5:
+    elif int(inputs[0]) == 5:
         # -------------------------------------------------- REQ 4 -------------------------------------------------- #
         print("")
             
@@ -160,7 +160,7 @@ while True:
         print("Indique el nombre del landing point que desea que falle:")
         lp = input("\n")
         resultados = controller.fallasLP(catalog, lp)
-        
+
 
 
     else:

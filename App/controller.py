@@ -179,5 +179,8 @@ def RutaMinima(paisA, paisB, catalog):
     return ruta
 
 
+# ------------------------------------------------------------- REQ 5 ------------------------------------------------------------- #
+def fallasLP(catalog, lp):
+    return model.fallasLP(catalog, lp)
 
     
