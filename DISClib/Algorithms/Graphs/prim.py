@@ -36,7 +36,7 @@ from DISClib.Utils import error as error
 import math
 assert config
 
-
+#trabajo
 def PrimMST(graph):
     """
     Implementa el algoritmo de Prim
@@ -58,7 +58,7 @@ def PrimMST(graph):
     except Exception as exp:
         error.reraise(exp, 'prim:PrimMST')
 
-
+#trabajo
 def prim(graph, search, v):
     """
     Args:
@@ -79,7 +79,7 @@ def prim(graph, search, v):
     except Exception as exp:
         error.reraise(exp, 'prim:prim')
 
-
+#trabajo
 def scan(graph, search, vertex):
     """
     Args:
@@ -110,7 +110,7 @@ def scan(graph, search, vertex):
     except Exception as exp:
         error.reraise(exp, 'bellman:disto')
 
-
+#trabajo
 def edgesMST(graph, search):
     """
     Args:
@@ -140,7 +140,7 @@ def weightMST(graph, search):
         weight = weight + e.weight(edge)
     return weight
 
-
+#trabajo
 def initSearch(graph):
     """
     Inicializa la estructura de busqueda y deja
