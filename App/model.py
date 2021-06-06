@@ -24,6 +24,8 @@
  * Dario Correal - Version inicial
  """
 
+from DISClib.DataStructures.edge import weight
+from DISClib.ADT.indexminpq import contains
 from DISClib.ADT.orderedmap import newMap
 from math import sin, cos, sqrt, atan2, radians
 
@@ -33,9 +35,12 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.ADT import orderedmap as om
-from DISClib.ADT.graph import gr
+from DISClib.ADT.graph import gr, vertices
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
+from DISClib.ADT import queue as qu
+from DISClib.Algorithms.Graphs import prim
+
 assert cf
 
 """
@@ -60,9 +65,10 @@ def newCatalog():
     catalog['countries'] = mp.newMap(loadfactor=4.0)
     #grafo : vertices: lp-cables y capitales, arcos:conexiones por cable y conexiones terrestres con capitales (y 
 # conexiones triviales entre vertices del mismo lp)
-    catalog['grafo'] = gr.newGraph(datastructure='ADJ_LIST', directed=True, comparefunction=CompareLandingPoints, size=3300)
+    catalog['grafo'] = gr.newGraph(datastructure='ADJ_LIST', directed=True, comparefunction=CompareLandingPoints, size=2800)
     #aqui se guardara la info general que retorna el algoritmmo de Kosaraju sobre el grafo
     catalog['Kosaraju'] = None
+    catalog['MST'] = None
     return catalog
 
 # Funciones para agregar informacion al catalogo
@@ -303,6 +309,42 @@ def RutaMinima(paisA, paisB, catalog):
             idLandingPointB = lp['landing_point_id']'''
     
     djk.Dijkstra(grafo, capitalA)
+
+
+def MST(catalog):
+    grafo = catalog['grafo']
+    mst = prim.PrimMST(grafo)
+    catalog['MST'] = mst
+    return mst
+
+def tot_peso_mst(grafo, mst):
+    return prim.weightMST(grafo, mst)
+
+
+def num_vert_mst(mst):
+    arcos = mp.size(mst['marked'])
+    vertices = arcos + 1
+    return vertices
+
+def max_rama(mst):
+    
+    return mst['mst']
+
+def graphPrim(mst):
+    '''for vertice in lt.iterator(mp.keySet(mst['edgeTo'])):
+        print(vertice)
+        edgeTo = me.getValue(mp.get(mst['edgeTo'], vertice))
+        print(edgeTo)'''
+    grafo = gr.newGraph(datastructure='ADJ_LIST', directed=True, comparefunction=CompareLandingPoints)
+    for conexion in lt.iterator(mp.valueSet(mst['edgeTo'])):
+        vertexA = conexion['vertexA']
+        vertexB = conexion['vertexB']
+        weight = conexion['weight']
+        gr.insertVertex(vertexA)
+        gr.insertVertex(vertexB)
+        gr.addEdge(vertexA, vertexB, weight)
+    return grafo
+
     
 
 

@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from App.model import MST
 import config as cf
 import model
 import csv
@@ -28,7 +29,8 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT import queue as qu
-from DISClib.ADT.graph import gr
+from DISClib.ADT.graph import gr, numVertices
+
 
 fileConnections = 'connections.csv'
 fileLP = 'landing_points.csv'
@@ -178,6 +180,25 @@ def RutaMinima(paisA, paisB, catalog):
     ruta = model.RutaMinima(paisA, paisB, catalog)
     return ruta
 
+
+
+#----------------------------------------------------------------REQ 4 ---------------------------------------------
+
+def req4(catalog):
+    if catalog['MST'] == None:
+        model.MST(catalog)
+    mst = catalog['MST']
+    grafo = catalog['grafo']
+    total_dist = model.tot_peso_mst(grafo, mst)
+    num_vert = model.num_vert_mst(mst)
+    max_rama = model.max_rama(mst)
+    #print(qu.dequeue(max_rama))
+    model.graphPrim(mst)
+
+
+
+    return total_dist, num_vert, max_rama
+    
 
 
     

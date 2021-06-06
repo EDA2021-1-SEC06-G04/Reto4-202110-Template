@@ -86,8 +86,7 @@ while True:
         y sus coordenadas latitud y longitud son: ({}), ({}). '''.format(primer_lp['name'], primer_lp['landing_point_id']
         , primer_lp['latitude'], primer_lp['longitude']))
 
-        print('Cantidad vertices = {}'.format(gr.numVertices(catalog['grafo'])))
-        print(mp.size(catalog['landing_points2']))
+#        print('Cantidad vertices = {}'.format(gr.numVertices(catalog['grafo'])))
         
 
 
@@ -123,6 +122,7 @@ while True:
             print("Identificador: {}".format(lp['landing_point_id']))
             print('Con {} cables distintos.'.format(cant_cables))
             print('--------------------------------------------------------------------------------------------------')
+            print('La cantidad total de cables distintos conectados a estos 10 landing points es: {}.'.format(cant_cables_tot))
                 
 
     
@@ -134,24 +134,17 @@ while True:
         print("Indique el País B (destino):")
         paisB = input("\n")
         controller.RutaMinima(paisA, paisB, catalog)
-        while not qu.isEmpty(cola_lp):
-            lp, listavertices = qu.dequeue(cola_lp)
-            cant_vertices = lt.size(listavertices)
-            contador = contador + 1
-            print("TOP {}:".format(contador))
-#            print(lp)
-            print("Nombre: {}".format(lp['name']))
-            print("País: {}".format(lp['country']))
-            print("Identificador: {}".format(lp['landing_point_id']))
-            print("Cantidad cables : {} ".format(cant_vertices))
-            print('--------------------------------------------------------------------------------------')
-        print("----------------------------------- Total de cables conectados a estos landing points -----------------------------------")
-        print("TOTAL: {}".format(cant_cables_tot))
+        
         
 
-    elif int(input[0]) == 5:
+    elif int(inputs[0]) == 5:
         # -------------------------------------------------- REQ 4 -------------------------------------------------- #
-        print("")
+        total_dist, num_vert, max_rama = controller.req4(catalog)
+        print('--------------------------------------------------------------------------------------')
+        print('La distancia total del árbol de expansión mínima es: {} km.'.format(total_dist))
+        print('El numero de vertices que tiene el árbol de expansión mínima es: {}.'.format(num_vert))
+        max_rama = 0
+        print('La mayor longitud posible de una rama es : {}.'.format(max_rama))
             
             
 
