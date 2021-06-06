@@ -20,7 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from App.model import MST
+from App.model import CompareIntegersOM, MST
 import config as cf
 import model
 import csv
@@ -183,9 +183,26 @@ def RutaMinima(paisA, paisB, catalog):
 
 # ------------------------------------------------------------- REQ 5 ------------------------------------------------------------- #
 def fallasLP(catalog, lp):
-    return model.fallasLP(catalog, lp)
+    mpRespuesta = model.fallasLP(catalog, lp)
+    lista_tuplas_paises = mp.valueSet(mpRespuesta)
+    rbt = om.newMap(omaptype='RBT', comparefunction=model.CompareIntegersOM)
+    for tupla in lt.iterator(lista_tuplas_paises):
+        if om.contains(rbt, tupla[1]):
+            lista = me.getValue(om.get(rbt, tupla[1]))
+            lt.addLast(lista, tupla)
+        else:
+            lista = lt.newList(datastructure='ARRAY_LIST')
+            lt.addLast(lista, tupla)
+            om.put(rbt, tupla[1], lista)
+    
+    lista_listas_tuplas = om.valueSet(rbt)
+    listaRespuesta = lt.newList(datastructure='ARRAY_LIST')
+    for lista_tuplas in lt.iterator(lista_listas_tuplas):
+        for tupla in lt.iterator(lista_tuplas):
+            lt.addLast(listaRespuesta, tupla)
+    return listaRespuesta, lt.size(listaRespuesta)
 
-#----------------------------------------------------------------REQ 4 ---------------------------------------------
+#----------------------------------------------------------------REQ 4 ------------------------------------------------------------ #
 
 def req4(catalog):
     if catalog['MST'] == None:

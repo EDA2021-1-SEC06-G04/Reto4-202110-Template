@@ -69,6 +69,7 @@ def newCatalog():
     #aqui se guardara la info general que retorna el algoritmmo de Kosaraju sobre el grafo
     catalog['Kosaraju'] = None
     catalog['MST'] = None
+    catalog['countries2'] = mp.newMap(loadfactor=4.0)
     return catalog
 
 # Funciones para agregar informacion al catalogo
@@ -92,6 +93,9 @@ def addCountry_Mapa(catalog, country_agregar):
     countries_mapa = catalog['countries']
     mp.put(countries_mapa, country_agregar['CountryName'], country_agregar)
     gr.insertVertex(catalog['grafo'], country_agregar['CapitalName'])
+    countries_mapa2 = catalog['countries2']
+    mp.put(countries_mapa2, country_agregar['CapitalName'], country_agregar['CountryName'])
+
 
 def addConexion(catalog, conexion):
     cable = conexion['cable_id']
@@ -355,6 +359,7 @@ def graphPrim(mst):
 def fallasLP(catalog, lp):
     mapaLP2 = catalog['landing_points2']
     mapaLP = catalog['landing_points']
+    countries = catalog['countries2']
     grafo = catalog['grafo']
     id_lp = me.getValue(mp.get(mapaLP2, lp))
     lista_vertices = me.getValue(mp.get(mapaLP,id_lp))['lista_vertices']
@@ -362,7 +367,18 @@ def fallasLP(catalog, lp):
     mpRespuesta = mp.newMap(loadfactor=4.0)
     for vertice in lt.iterator(lista_vertices):
         lt_adj = gr.adjacents(grafo, vertice)
-        #for adj in lt.iterator(lt_adj):
+        for adj in lt.iterator(lt_adj):
+            if mp.contains(countries, adj):
+                pais = me.getValue(mp.get(countries, adj))
+                distancia = calcularDistancia(catalog, id_lp,pais)
+            else:
+                adj_lp_id = adj.split('-')[0]
+                pais_crudo = me.getValue(mp.get(mapaLP, adj_lp_id))['name']
+                pais = pais_crudo.split(', ')[-1]
+                distancia = calcularDistancia(catalog, id_lp, adj_lp_id)
+            mp.put(mpRespuesta, pais, (pais, distancia))
+
+    return mpRespuesta
             
 
 

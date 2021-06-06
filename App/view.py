@@ -153,6 +153,14 @@ while True:
         print("Indique el nombre del landing point que desea que falle:")
         lp = input("\n")
         resultados = controller.fallasLP(catalog, lp)
+        numPaises = resultados[1]
+        listaPaises = resultados[0]
+        print("-------------------------------------------------------------------------------------")
+        print("Número de países afectados: {}".format(numPaises))
+        print("-------------------------------------------------------------------------------------")
+        print("LISTA PAÍSES AFECTADOS:")
+        for pos in lt.iterator(listaPaises):
+            print("País: {}, Distancia: {} km".format(pos[0],pos[1]))
 
 
 
