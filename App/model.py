@@ -311,18 +311,17 @@ def RutaMinima(paisA, paisB, catalog):
 
 # ----------------------------------------------------- REQ 5 ----------------------------------------------------- #
 def fallasLP(catalog, lp):
-    mapaLPs = catalog['landing_points']
-    for landp in lt.iterator(mp.keySet(mapaLPs)):
-        #name_lp = landp['name']
-        if landp['name'] == lp:
-            #print("ESTE ES!!")
-            id_landingPoint = landp['landing_point_id']
-    if id_landingPoint == None:
-        return print("Por favor escriba un nombre adecuado de landing point")
-    
-    lista_vertices_lp = me.getValue(mp.get(mapaLPs, id_landingPoint))['lista_vertices']
-    for vertice in lt.iterator(lista_vertices_lp):
-        print("HOLA FUNCIONÓ")
+    mapaLP2 = catalog['landing_points2']
+    mapaLP = catalog['landing_points']
+    grafo = catalog['grafo']
+    id_lp = me.getValue(mp.get(mapaLP2, lp))
+    lista_vertices = me.getValue(mp.get(mapaLP,id_lp))['lista_vertices']
+
+    mpRespuesta = mp.newMap(loadfactor=4.0)
+    for vertice in lt.iterator(lista_vertices):
+        lt_adj = gr.adjacents(grafo, vertice)
+        #for adj in lt.iterator(lt_adj):
+            
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
