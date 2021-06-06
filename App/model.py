@@ -346,7 +346,25 @@ def graphPrim(mst):
     return grafo
 
     
+# ----------------------------------------------------- REQ 4 ----------------------------------------------------- #
 
+
+
+
+# ----------------------------------------------------- REQ 5 ----------------------------------------------------- #
+def fallasLP(catalog, lp):
+    mapaLPs = catalog['landing_points']
+    for landp in lt.iterator(mp.keySet(mapaLPs)):
+        #name_lp = landp['name']
+        if landp['name'] == lp:
+            #print("ESTE ES!!")
+            id_landingPoint = landp['landing_point_id']
+    if id_landingPoint == None:
+        return print("Por favor escriba un nombre adecuado de landing point")
+    
+    lista_vertices_lp = me.getValue(mp.get(mapaLPs, id_landingPoint))['lista_vertices']
+    for vertice in lt.iterator(lista_vertices_lp):
+        print("HOLA FUNCIONÓ")
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista

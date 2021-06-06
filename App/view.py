@@ -148,6 +148,12 @@ while True:
             
             
 
+    elif int(inputs[0]) == 6:
+        # -------------------------------------------------- REQ 5 -------------------------------------------------- #
+        print("Indique el nombre del landing point que desea que falle:")
+        lp = input("\n")
+        resultados = controller.fallasLP(catalog, lp)
+
 
 
     else:
