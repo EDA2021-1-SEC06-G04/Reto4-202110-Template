@@ -124,7 +124,7 @@ while True:
             print("Identificador: {}".format(lp['landing_point_id']))
             print('Con {} cables distintos.'.format(cant_cables))
             print('--------------------------------------------------------------------------------------------------')
-            print('La cantidad total de cables distintos conectados a estos 10 landing points es: {}.'.format(cant_cables_tot))
+        print('La cantidad total de cables distintos conectados a estos 10 landing points es: {}.'.format(cant_cables_tot))
                 
 
     
@@ -143,7 +143,7 @@ while True:
         print('-{}, 0 km'.format(paisA))
         while not qu.isEmpty(ruta_cola):
             punto, dist = qu.dequeue(ruta_cola)
-            print('{}, {} km'.format(punto, dist))
+            print('-{}, {} km'.format(punto, dist))
         
         
 
