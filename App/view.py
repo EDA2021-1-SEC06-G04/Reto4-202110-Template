@@ -85,6 +85,8 @@ while True:
         print('''El primer landing point cargado es {}, con codigo {}
         y sus coordenadas latitud y longitud son: ({}), ({}). '''.format(primer_lp['name'], primer_lp['landing_point_id']
         , primer_lp['latitude'], primer_lp['longitude']))
+        print('''El último país cargado es {}, con 
+        {} habitantes y {} usuarios de internet. '''.format(ultimo_pais['CountryName'], ultimo_pais['Population'], ultimo_pais['Internet_users']))
 
 #        print('Cantidad vertices = {}'.format(gr.numVertices(catalog['grafo'])))
         
@@ -133,7 +135,15 @@ while True:
         paisA = input("\n")
         print("Indique el País B (destino):")
         paisB = input("\n")
-        controller.RutaMinima(paisA, paisB, catalog)
+        ruta_cola, distancia = controller.RutaMinima(catalog, paisA, paisB)
+        print('---------------------------------------------------------------------------------------------------')
+        print('                     INFO DE LA RUTA MINIMA:')
+        print('La distancia total de la ruta es: {} km'.format(distancia))
+        print('La ruta es:')
+        print('-{}, 0 km'.format(paisA))
+        while not qu.isEmpty(ruta_cola):
+            punto, dist = qu.dequeue(ruta_cola)
+            print('{}, {} km'.format(punto, dist))
         
         
 
@@ -143,7 +153,7 @@ while True:
         print('--------------------------------------------------------------------------------------')
         print('La distancia total del árbol de expansión mínima es: {} km.'.format(total_dist))
         print('El numero de vertices que tiene el árbol de expansión mínima es: {}.'.format(num_vert))
-        max_rama = 0
+        
         print('La mayor longitud posible de una rama es : {}.'.format(max_rama))
             
             

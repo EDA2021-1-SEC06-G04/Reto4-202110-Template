@@ -176,9 +176,9 @@ def lpInterconexion(catalog):
 
     
 # ------------------------------------------------------------- REQ 3 ------------------------------------------------------------- #
-def RutaMinima(paisA, paisB, catalog):
-    ruta = model.RutaMinima(paisA, paisB, catalog)
-    return ruta
+def RutaMinima(catalog, paisA, paisB):
+    ruta, distancia = model.RutaMinima(catalog, paisA, paisB)
+    return ruta, distancia
 
 
 # ------------------------------------------------------------- REQ 5 ------------------------------------------------------------- #
@@ -209,11 +209,12 @@ def req4(catalog):
         model.MST(catalog)
     mst = catalog['MST']
     grafo = catalog['grafo']
+    model.graphPrim(mst)
     total_dist = model.tot_peso_mst(grafo, mst)
     num_vert = model.num_vert_mst(mst)
     max_rama = model.max_rama(mst)
     #print(qu.dequeue(max_rama))
-    model.graphPrim(mst)
+    
 
 
 

@@ -25,7 +25,7 @@
  """
 
 from DISClib.DataStructures.edge import weight
-from DISClib.ADT.indexminpq import contains
+from DISClib.ADT.indexminpq import contains, size
 from DISClib.ADT.orderedmap import newMap
 from math import sin, cos, sqrt, atan2, radians
 
@@ -35,11 +35,12 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.ADT import orderedmap as om
-from DISClib.ADT.graph import gr, vertices
+from DISClib.ADT.graph import gr
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.ADT import queue as qu
 from DISClib.Algorithms.Graphs import prim
+from DISClib.ADT import stack as stk
 
 assert cf
 
@@ -57,19 +58,20 @@ def newCatalog():
     }
     #llaves son landing_point__id, valores son toda la info del lp
     catalog['landing_points'] = mp.newMap(maptype='PROBING', loadfactor=0.5, comparefunction=CompareLandingPoints)
-    #llaves son nombres de lp, valores son los landing_point_id oara acceder al mapa de arriba
+    #llaves son nombres de lp, valores son los landing_point_id para acceder al mapa de arriba
     catalog['landing_points2'] = mp.newMap(maptype='PROBING', loadfactor=0.5, comparefunction=CompareLandingPoints)
     #llaves son ['cable_name'] valores son toda la info del cable del archivo de conexiones
     catalog['cables'] = mp.newMap(loadfactor=4.0)
     #llaves son nombres de paises, valores son toda la info del pais
     catalog['countries'] = mp.newMap(loadfactor=4.0)
+    #llaves son nombres de capitales, valores son los nombres de paises para acceder al mapa de arriba
+    catalog['countries2'] = mp.newMap(loadfactor=4.0)
     #grafo : vertices: lp-cables y capitales, arcos:conexiones por cable y conexiones terrestres con capitales (y 
 # conexiones triviales entre vertices del mismo lp)
     catalog['grafo'] = gr.newGraph(datastructure='ADJ_LIST', directed=True, comparefunction=CompareLandingPoints, size=2800)
     #aqui se guardara la info general que retorna el algoritmmo de Kosaraju sobre el grafo
     catalog['Kosaraju'] = None
     catalog['MST'] = None
-    catalog['countries2'] = mp.newMap(loadfactor=4.0)
     return catalog
 
 # Funciones para agregar informacion al catalogo
@@ -293,28 +295,37 @@ def lpInterconexion(catalog):
     
 
 # ----------------------------------------------------- REQ 3 ----------------------------------------------------- #
-def RutaMinima(paisA, paisB, catalog):
+def RutaMinima(catalog, paisA, paisB):
     mapaLP = catalog['landing_points']
     mapaCountries = catalog['countries']
-    cables = catalog['cables']
+    mapaCountries2 = catalog['countries2']
     grafo = catalog['grafo']
 
-    capitalA = me.getValue(om.get(mapaCountries, paisA))['capital_name']
-    capitalB = me.getValue(om.get(mapaCountries, paisB))['capital_name']
-    #latA = me.getValue(om.get(mapaCountries, paisA))['CapitalLatitude']
-    #latB = me.getValue(om.get(mapaCountries, paisB))['CapitalLatitude']
-    #lonA = me.getValue(om.get(mapaCountries, paisA))['CapitalLongitude']
-    #lonB = me.getValue(om.get(mapaCountries, paisB))['CapitalLongitude']
-
-    '''for lp in lt.iterator(om.valueSet(mapaLP)):
-        if lp['latitude'] == latA and lp['longitude'] == lonA:
-            idLandingPointA = lp['landing_point_id']
-        elif lp['latitude'] == latB and lp['longitude'] == lonB:
-            idLandingPointB = lp['landing_point_id']'''
+    capitalA = me.getValue(mp.get(mapaCountries, paisA))['CapitalName']
+    capitalB = me.getValue(mp.get(mapaCountries, paisB))['CapitalName']
     
-    djk.Dijkstra(grafo, capitalA)
+    dijkstra = djk.Dijkstra(grafo, capitalA)
+
+    distancia_total = djk.distTo(dijkstra, capitalB)
+    ruta_cruda = djk.pathTo(dijkstra, capitalB)
+    ruta = qu.newQueue('ARRAY_LIST')
+    previo = None
+    while not stk.isEmpty(ruta_cruda):
+        punto = stk.pop(ruta_cruda)['vertexB']
+        dist = djk.distTo(dijkstra, punto)
+        if not mp.contains(mapaCountries2, punto):
+            punto = 'Landing point ' + punto.split('-')[0]
+        print(dist)
+        print(punto)
+        p_d = (punto, dist)
+        if not previo == punto:
+            qu.enqueue(ruta, p_d)
+        previo = punto
 
 
+    return ruta, distancia_total
+
+# ----------------------------------------------------- REQ 4 ----------------------------------------------------- #
 def MST(catalog):
     grafo = catalog['grafo']
     mst = prim.PrimMST(grafo)
@@ -326,31 +337,47 @@ def tot_peso_mst(grafo, mst):
 
 
 def num_vert_mst(mst):
-    arcos = mp.size(mst['marked'])
-    vertices = arcos + 1
-    return vertices
+    grafo = mst['grafo']
+    return gr.numVertices(grafo)
 
 def max_rama(mst):
-    
-    return mst['mst']
+    grafo = mst['grafo']
+    max_rama = 0
+    for vertice1 in lt.iterator(gr.vertices(grafo)):
+        dijsktra = djk.initSearch(grafo, vertice1)
+     #   print('iniciando dijsktra para el vertice {}'.format(vertice1))
+        for vertice2 in lt.iterator(gr.vertices(grafo)):
+     #       print('revisando camino hacia el vertice {}'.format(vertice2))
+            if not vertice1 == vertice2:
+                if djk.hasPathTo(dijsktra, vertice2):
+                  #  print('el vertice {} tiene camino'.format(vertice2))
+                    rama = djk.distTo(dijsktra, vertice2)
+                   # print(rama)
+                    if rama > max_rama:
+                        max_rama = rama
+    return max_rama
 
 def graphPrim(mst):
     '''for vertice in lt.iterator(mp.keySet(mst['edgeTo'])):
         print(vertice)
         edgeTo = me.getValue(mp.get(mst['edgeTo'], vertice))
         print(edgeTo)'''
-    grafo = gr.newGraph(datastructure='ADJ_LIST', directed=True, comparefunction=CompareLandingPoints)
+    grafo = gr.newGraph(datastructure='ADJ_LIST', directed=True, comparefunction=CompareLandingPoints, size=2300)
+    
     for conexion in lt.iterator(mp.valueSet(mst['edgeTo'])):
         vertexA = conexion['vertexA']
         vertexB = conexion['vertexB']
         weight = conexion['weight']
-        gr.insertVertex(vertexA)
-        gr.insertVertex(vertexB)
-        gr.addEdge(vertexA, vertexB, weight)
+        gr.insertVertex(grafo, vertexA)
+        gr.insertVertex(grafo, vertexB)
+        gr.addEdge(grafo, vertexA, vertexB, weight)
+    
+    mst['grafo'] = grafo
+#    print('AQUI ',lt.size(gr.edges(grafo)))
+#    print('AQUI: ', lt.size(gr.vertices(grafo)))
     return grafo
 
     
-# ----------------------------------------------------- REQ 4 ----------------------------------------------------- #
 
 
 
